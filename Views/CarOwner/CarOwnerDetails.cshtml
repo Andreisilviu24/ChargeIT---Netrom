@@ -1,0 +1,46 @@
+﻿@model CarOwnerViewModel
+@{
+    ViewData["Title"] = "Car Owner Details Page";
+}
+
+<link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+
+<h1 class="display-4 mb-4">Car Owner Details</h1>
+
+<div class="card margin-bot-15" style="width: 26rem;">
+    <img class="card-img-top" src="https://pngimg.com/uploads/electric_car/electric_car_PNG42.png" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">Details</h5>
+
+        <div>
+            <label asp-for="Name" class="label-bold"></label>
+            <span>: @Model.Name</span>
+        </div>
+
+        <div>
+            <label asp-for="Email" class="label-bold"></label>
+            <span>: @Model.Email</span>
+        </div>
+
+        <div>
+            <label asp-for="Cars" class="label-bold"></label>
+            <span>
+                : <span>
+                    @foreach (var car in @Model.Cars)
+                    {
+                        <span>@car.PlateNumber </span>
+                    }
+                </span>
+            </span>
+        </div>
+
+    </div>
+</div>
+
+<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#charge-machine-details').DataTable();
+    });
+</script>

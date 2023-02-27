@@ -1,0 +1,81 @@
+﻿@model CarDetailsViewModel
+
+@{
+    ViewData["Title"] = "Car Details Page";
+}
+
+<link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+
+<h1 class="display-4 mb-4">Car Details</h1>
+
+<div class="card margin-bot-15" style="width: 26rem;">
+    <img class="card-img-top" src="https://pngimg.com/uploads/electric_car/electric_car_PNG42.png" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">Details</h5>
+        <div>
+            <label asp-for="Car.PlateNumber" class="label-bold">Plate Number</label>
+            <span>: @Model.Car.PlateNumber</span>
+        </div>
+
+        <div>
+            <label asp-for="Car.CarOwner.Name" class="label-bold">Name</label>
+            <span>: @Model.Car.CarOwner.Name</span>
+        </div>
+    </div>
+</div>
+
+<h3>Bookings History</h3>
+<table id="car-details" class="table text-dark">
+    <thead>
+        <tr>
+            <th>Charge Machine Code</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in @Model.Bookings)
+        {
+            var now = DateTime.Now;
+            if (now > @booking.StartTime)
+            {
+                <tr>
+                    <td>@booking.ChargeMachine.Code</td>
+                    <td>@booking.StartTime</td>
+                    <td>@booking.EndTime</td>
+                    <td>Done</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@booking.ChargeMachine.Code</td>
+                    <td>@booking.StartTime</td>
+                    <td>@booking.EndTime</td>
+                    <td>
+                        <a type="button"
+                   class="btn btn-outline-dark"
+                   asp-controller="Booking"
+                   asp-action="DeleteCarBooking" asp-route-id="@booking.Id">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+
+<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#car-details').DataTable();
+    });
+</script>
+

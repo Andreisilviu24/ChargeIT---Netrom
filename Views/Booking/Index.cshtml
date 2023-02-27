@@ -1,0 +1,142 @@
+﻿@model AddBookingViewModel
+
+@using Newtonsoft.Json
+
+@{
+    ViewData["Title"] = "Bookings Page";
+}
+
+<h1 class="display-4 mb-4">New Booking</h1>
+
+<form asp-controller="Booking" asp-action="SaveBooking" method="post">
+
+    <div class="form-group">
+        <label asp-for="ChargeMachineId" class="col-md-2 control-label form-label"></label>
+        <div class="col-md-12 margin-bot-15">
+            <select onchange="getData(); getAvailableIntervals();" id="charge-machine-dropdown" asp-for="ChargeMachineId" asp-items="@(new SelectList(Model.ChargeMachines, nameof(DropDownViewModel.Id), nameof(DropDownViewModel.Value)))"
+                    class="form-control custom-form-input form-dropdown">
+                <option value="">Select a charging station</option>
+            </select>
+            <span asp-validation-for="ChargeMachineId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CarId" class="col-md-2 control-label form-label"></label>
+        <div class="col-md-12 margin-bot-15">
+            <select asp-for="CarId" asp-items="@(new SelectList(Model.Cars, nameof(DropDownViewModel.Id), nameof(DropDownViewModel.Value)))"
+                    class="form-control custom-form-input form-dropdown">
+                <option value="">Select a car</option>
+            </select>
+            <span asp-validation-for="CarId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group station-form margin-bot-15">
+        <label class="form-label" asp-for="StartTime"></label>
+        <input type="date" id="date-dropdown" class="form-control" asp-for="StartTime" min="@DateTime.Now.Date.ToString("yyyy-MM-dd")" onchange="getAvailableIntervals()">
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group margin-bot-15">
+        <label asp-for="IntervalHour" class="col-md-2 control-label form-label">Available Hours</label>
+        <div class="col-md-12">
+            <select id="available-intervals-dropdown" asp-for="IntervalHour" class="form-control custom-form-input form-dropdown">
+                <option value="">Select an available interval</option>
+            </select>
+            <span asp-validation-for="IntervalHour" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+    <!-- <a type="button" class="btn btn-secondary" asp-area="" asp-controller="Home" asp-action="Index">Cancel</a>-->
+</form>
+<div id="googleMap" style="height: 400px; width: 100%; margin-top: 30px;"></div>
+
+<script>
+
+    $(document).ready(function() {
+        getLocation();
+    });
+
+    function getAvailableIntervals() {
+        var chargeMachineId = document.getElementById("charge-machine-dropdown").value;
+        var date = document.getElementById("date-dropdown").value;
+
+        if (chargeMachineId === null || date === "") {
+            return;
+        }
+
+        $.ajax({
+            url: "/Bookings/GetAvailableIntervals?date=" + date + "&chargeMachineId=" + chargeMachineId,
+            type: 'get',
+            success: function(data) {
+
+                var availableIntervalsDropdown = document.getElementById("available-intervals-dropdown");
+                availableIntervalsDropdown.innerHTML = "";
+
+                var defaultoption = document.createElement("option");
+                defaultoption.value = null;
+                defaultoption.innerText = "Select an available interval";
+                availableIntervalsDropdown.appendChild(defaultoption);
+
+                for (var i = 0; i < data.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = data[i];
+                    option.innerText = get24FormattedHour(data[i]) + " - " + get24FormattedHour(data[i] + 1);
+
+                    availableIntervalsDropdown.appendChild(option);
+                }
+            }
+        });
+    }
+
+    function initMap(position) {
+        var myCenter = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: true, mapTypeId: google.maps.MapTypeId.ROADMAP };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+        var marker = new google.maps.Marker({
+            'position': myCenter,
+            'map': map,
+            'title': "Your location"
+        });
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(initMap);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function get24FormattedHour(hour) {
+        return (hour < 10) ? "0" + hour + " : 00" : hour + " : 00";
+    }
+
+    function getData() {
+
+        var chargeMachineId = document.getElementById("charge-machine-dropdown").value;
+        console.log(chargeMachineId);
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model.ChargeMachines));
+
+        $.each(data, function(i, item) {
+            if (item.Id == chargeMachineId) {
+
+                console.log(item);
+                var myCenter = new google.maps.LatLng(item.Latitude, item.Longitude);
+                var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: true, mapTypeId: google.maps.MapTypeId.ROADMAP };
+                var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+                var marker = new google.maps.Marker({
+                    'position': new google.maps.LatLng(item.Latitude, item.Longitude),
+                    'map': map,
+                    'title': item.Code
+                });
+            }
+        });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js"> </script>

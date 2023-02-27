@@ -1,0 +1,43 @@
+﻿@model ChargeMachineViewModel
+
+@{
+    ViewData["Title"] = "Add Station Page";
+}
+
+<h1 class="display-4 mb-4">New Station</h1>
+
+<form asp-controller="ChargeMachine" asp-action="AddNewStation" method="post">
+  <div class="form-group margin-bot-15">
+    <label asp-for="City" class="form-label"></label>
+    <input type="text" class="form-control form-input" asp-for="City" placeholder="City">
+     <span asp-validation-for="City" class="text-danger"></span>   
+  </div>
+
+  <div class="form-group margin-bot-15">
+    <label asp-for="Street" class="form-label"></label>
+    <input type="text" class="form-control form-input" asp-for="Street" placeholder="Street">
+    <span asp-validation-for="Street" class="text-danger"></span>   
+  </div>
+
+  <div class="form-group margin-bot-15">
+    <label asp-for="Number" class="form-label"></label>
+    <input type="number" class="form-control form-input" asp-for="Number" placeholder="Number">
+    <span asp-validation-for="Number" class="text-danger"></span>  
+  </div>
+
+  <div class="form-group margin-bot-15">
+    <label asp-for="Longitude" class="form-label"></label>
+    <input step="0.000001" type="number" class="form-control form-input" asp-for="Longitude" placeholder="Longitude">
+    <span asp-validation-for="Longitude" class="text-danger"></span> 
+  </div>
+
+  <div class="form-group margin-bot-15">
+    <label asp-for="Latitude" class="form-label"></label>
+    <input step="0.000001" type="number" class="form-control form-input" asp-for="Latitude" placeholder="Latitude">
+    <span asp-validation-for="Latitude" class="text-danger"></span>
+  </div>
+
+  <button type="submit" class="btn btn-success">Submit</button>
+  <a type="button" class="btn btn-secondary" asp-area="" asp-controller="ChargeMachine" asp-action="Index">Cancel</a>
+
+</form>

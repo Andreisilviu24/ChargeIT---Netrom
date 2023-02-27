@@ -1,0 +1,44 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.add-station-button {
+    margin-bottom: 15px;
+}
+
+.margin-bot-15 {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    margin-bottom: 10px;
+}
+
+.form-input {
+    padding: 10px;
+}
+
+.label-bold {
+    font-weight: bold;
+}
+
+.nav-item:hover {
+    background: black;
+}
+
+

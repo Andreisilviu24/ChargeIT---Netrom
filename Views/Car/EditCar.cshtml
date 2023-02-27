@@ -1,0 +1,33 @@
+﻿@model CarViewModel
+
+@{
+    ViewData["Title"] = "Edit Car Page";
+}
+
+<h1 class="display-4 mb-4">Edit Car</h1>
+
+<form asp-controller="Car" asp-action="EditExistingCar" method="post">
+
+    <input type="text" class="form-control form-input" asp-for="Id" hidden>
+
+    <div class="form-group margin-bot-15">
+        <label asp-for="PlateNumber" class="form-label">Plate Number</label>
+        <input type="text" class="form-control form-input" asp-for="PlateNumber" placeholder="Plate Number">
+        <span asp-validation-for="PlateNumber" class="text-danger"></span>
+    </div>
+
+     <div class="form-group">
+        <label asp-for="CarOwner.Name" class="col-md-2 control-label form-label"></label>
+        <div class="col-md-12 margin-bot-15">
+            <select asp-for="OwnerId" asp-items="@(new SelectList(Model.Owners, nameof(DropDownViewModel.Id), nameof(DropDownViewModel.Value)))"
+                    class="form-control custom-form-input form-dropdown">
+                <option value="">Select a car owner</option>
+            </select>
+            <span asp-validation-for="CarOwner.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a type="button" class="btn btn-secondary" asp-area="" asp-controller="Car" asp-action="Index">Cancel</a>
+
+</form>
